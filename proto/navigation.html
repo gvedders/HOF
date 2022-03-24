@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>AQ Hall of Fame</title>
+<script type="text/javascript" src="js/jquery-1.4.3.min.js"></script>
+<script type="text/javascript" src="js/jquery.cross-slide.min.js"></script>
+<script type="text/javascript"> 
+//<!--
+jQuery(function($) {
+    $('#container').crossSlide({
+      fade: .0000000001
+    }, [
+      {
+        src:  'images/bg.jpg',
+        href: 'https://secure.aquinas.edu/',
+        from: 'center left',
+        to:   'center right',
+        time: 60
+      }, {
+        src:  'images/bg.jpg',
+        href: 'https://secure.aquinas.edu/',
+        from: 'center right',
+        to:   'center left',
+        time: 60
+      }
+    ]);
+});
+// --> 
+</script>
+<link  href="//fonts.googleapis.com/css?family=Neuton:regular&subset=latin" rel="stylesheet" type="text/css" >
+<style type="text/css">
+		*{
+			margin:0;
+			padding:0;
+			color:#333;
+		}
+		body {
+			width: 1360px;
+			height: 768px;
+			overflow: hidden;
+		}
+		#container {
+			width: 1360px;
+			height: 768px;
+			overflow: hidden;
+			margin:0;
+			padding:0;
+			z-index: -1;
+		}
+		#navigation {
+			position: absolute;
+			width: 455px;
+			height: auto;
+			max-height: 1000px;
+			min-height: 105px;
+			left: 412px;
+			top: 73px;
+			z-index: 1;
+		}
+		#navigation ul {
+			display: block;
+			width: 100%;
+			height: auto;
+			overflow: hidden;
+			line-height: 2.3em;
+			list-style-type: none;
+			font-family: 'Neuton', "Times New Roman", Times, serif;
+			font-size: 20px;
+			text-shadow: #ababab 1px 0px 0px;
+			}
+		#navigation li {
+			display: block;
+			width: 98%;
+			height: 45px;
+			min-height: 45px;
+			max-height: 45px;
+			overflow: hidden;
+			background-color: #d5d5d5;
+			border: 1px solid #ababab;
+			text-align: center; 
+			margin-bottom: 1px;
+		}
+
+
+</style>
+</head>
+
+<body>
+<div id="container">
+</div>
+<div id="navigation">
+<ul>
+<li>Men's Basketball</li>
+<li>Women's Basketball</li>
+</ul>
+</div>
+
+</body>
+</html>

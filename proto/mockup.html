@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>AQ Hall of Fame</title>
+<script type="text/javascript" src="js/jquery-1.4.3.min.js"></script>
+<script type="text/javascript" src="js/jquery.cross-slide.min.js"></script>
+<script type="text/javascript"> 
+//<!--
+jQuery(function($) {
+    $('#container').crossSlide({
+      fade: .0000000001
+    }, [
+      {
+        src:  'images/bg.jpg',
+        href: 'https://secure.aquinas.edu/',
+        from: 'center left',
+        to:   'center right',
+        time: 60
+      }, {
+        src:  'images/bg.jpg',
+        href: 'https://secure.aquinas.edu/',
+        from: 'center right',
+        to:   'center left',
+        time: 60
+      }
+    ]);
+});
+// --> 
+</script>
+
+<style type="text/css">
+		*{
+			margin:0;
+			padding:0;
+			color:#333;
+		}
+		body {
+			width: 1360px;
+			height: 768px;
+			overflow: hidden;
+		}
+		#container {
+			width: 1360px;
+			height: 768px;
+			overflow: hidden;
+			margin:0;
+			padding:0;
+			z-index: -1;
+		}
+		#mainmenu {
+			position: absolute;
+			width: 536px;
+			height: 585px;
+			left: 50%;
+			margin-left: -268px;
+			top: 73px;
+			z-index: 1;
+		}
+		#mainmenu img {}
+
+</style>
+</head>
+
+<body>
+<div id="container">
+</div>
+<div id="mainmenu"><a href="navigation2.html"><img src="images/menu_placeholder.png" width="536" height="585" /></a></div>
+
+</body>
+</html>
