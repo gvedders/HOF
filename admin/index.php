@@ -203,7 +203,7 @@ function process($val_input) {
 	} else {
 		$photid = $mysqli->insert_id;
 	}
-	$path = "/home/httpd/htdocs/hof/photos/".$photid.".jpg";
+	$path = $basepath.$photid.".jpg";
 	?>
 	<h1>Photo Editor</h1>
 	<?php
