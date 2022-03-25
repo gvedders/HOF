@@ -202,7 +202,7 @@ function process($val_input) {
 	} else {
 		$photid = $conn->insert_id;
 	}
-	$path = "/home/httpd/htdocs/hof/photos/".$photid.".jpg";
+	$path = $basepath."/photos/".$photid.".jpg";
 	?>
 	<h1>Photo Editor</h1>
 	<?php
