@@ -1,9 +1,9 @@
 <?php
-include("settings.php");
+include("../config/settings.php");
 
 $sql = "SELECT * FROM profile WHERE lastname LIKE 'b%' ORDER BY lastname ASC";
-$result = mysql_query($sql, $conn);
-While ($list = mysql_fetch_array($result)) {
+$result = $conn->query($sql);
+While ($list = $result->fetch_array()) {
 	echo "".$list['firstname']." ".$list['lastname']."\n";
 }
 ?>

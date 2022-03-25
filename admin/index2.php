@@ -14,7 +14,7 @@ $currentpage = $_GET['currentpage'];
 
 // Test if OP is given to up via POST or GET and set value accordingly
 if ($a == "")
-{ 
+{
 	$op = $_POST['op'];
 } else {
 	$op = $a;
@@ -46,7 +46,7 @@ switch ($op) {
 	case "edit" :
 		edit($id);
 		break;
-	
+
 	case "process" :
 		process($val_input);
 		break;
@@ -97,7 +97,7 @@ function alpha() {
 <?php
 }
 
-function az($val_input) { 
+function az($val_input) {
 ?>
 	<div id="topper">
 	<div class="btn"><a href="<?php echo "".$_SERVER[PHP_SELF].""; ?>?a=edit">+ Add New Athlete</a></div>
@@ -106,7 +106,7 @@ function az($val_input) {
 <?php alpha(); ?>
 <ul id="playerList">
 <?php
-	include("settings.php");
+	include("../config/settings.php");
 	foreach ($val_input[0] as $value) {
 		$keyval = key($val_input[0]);
 		$proc_input[0][$keyval] = secure($value);
@@ -139,15 +139,15 @@ function az($val_input) {
 	if ($proc_input[0][Y] != "") { $let = "Y"; }
 	if ($proc_input[0][Z] != "") { $let = "Z"; }
 $sql = "SELECT * FROM profile WHERE lastname LIKE '$let%' ORDER BY lastname ASC";
-$result = mysql_query($sql, $conn);
+$result = $conn->query($sql);
  // while there are rows to be fetched...
-        while ($list = mysql_fetch_assoc($result)) {
+        while ($list = $result->fetch_assoc()) {
                 // echo data
                 $team = $list['team'];
-                echo "<li><a href=\"".$_SERVER[PHP_SELF]."?a=edit&amp;id=".$list['id']."\">".$list['firstname']." ".$list['lastname']." - (";
+                echo "<li><a href=\"".$_SERVER[PHP_SELF]."?a=edit&id=".$list['id']."\">".$list['firstname']." ".$list['lastname']." - (";
                 $sql2 = "SELECT * FROM sports WHERE id = '$team'";
-                $result2 = mysql_query($sql2, $conn) or trigger_error("SQL", E_USER_ERROR);
-                while ($list2 = mysql_fetch_assoc($result2)) {
+                $result2 = $conn->query($sql2) or trigger_error("SQL", E_USER_ERROR);
+                while ($list2 = $result2->fetch_assoc()) {
                         echo "".$list2['sport']." ";
                 }
                 if ($list['aa'] == "1") {
@@ -172,16 +172,16 @@ function secure($string) {
 	$string = htmlspecialchars($string);
 	$string = trim($string);
 	$string = stripslashes($string);
-	$string = mysql_real_escape_string($string);
+	$string = $conn->real_escape_string($string);
 	return $string;
 }
 
 // Do something with the form once it is posted
 function process($val_input) {
-	include("settings.php");
+	include("../config/settings.php");
 	foreach ($val_input[0] as $value){
 		$keyval = key($val_input[0]);
-		$proc_input[0][$keyval] = secure($value);	
+		$proc_input[0][$keyval] = secure($value);
 		next($val_input[0]);
 	}
 	if ($proc_input[0][id] != "") {
@@ -189,8 +189,8 @@ function process($val_input) {
 	} else {
 		$sql = "INSERT INTO profile values ('".$proc_input[0][id]."', '".$proc_input[0][team]."', '".$proc_input[0][firstname]."', '".$proc_input[0][lastname]."', '".$proc_input[0][pos_event]."', '".$proc_input[0][years]."', '".$proc_input[0][highschool]."', '".$proc_input[0][aa]."', '".$proc_input[0][hof]."', '".$proc_input[0][aaa]."', '".$proc_input[0][story]."', '".$proc_input[0][bests]."');";
 	}
-	if(!mysql_query($sql, $conn)) {
-		$dberror = mysql_error();
+	if(!$conn->query($sql)) {
+		$dberror = $conn->error;
 		echo "$dberror";
 	}
 	if ($proc_input[0][menu] != "") {
@@ -200,7 +200,7 @@ function process($val_input) {
 	if ($proc_input[0][id] != "") {
 		$photid = $proc_input[0][id];
 	} else {
-		$photid = mysql_insert_id();
+		$photid = $conn->insert_id;
 	}
 	$path = "/home/httpd/htdocs/hof/photos/".$photid.".jpg";
 	?>
@@ -210,7 +210,7 @@ function process($val_input) {
 		echo "<img class=\"updImg\" src=\"../photos/".$photid.".jpg\"><br />";
 	} else {
 		echo "<img class=\"updImg\" src=\"../photos/nopict.jpg\"><br />";
-	}	
+	}
 	?>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
@@ -268,7 +268,7 @@ function photo($idpict,$imgfile,$imgfile_name,$imgfile_size,$imgfile_type) {
 		/*== check size  0=width, 1=height ==*/
 		if (($imgsize[0] > 169) || ($imgsize[1] > 215))
 		{
-			/*== temp image file -- use "tempnam()" to generate the temp 
+			/*== temp image file -- use "tempnam()" to generate the temp
 			file name. This is done so if multiple people access the
 			script at once they won't ruin each other's temp file ==*/
 			$tmpimg = tempnam("/tmp", "MKUP");
@@ -317,18 +317,18 @@ function photo($idpict,$imgfile,$imgfile_name,$imgfile_size,$imgfile_type) {
 
 		/*== DO WHATEVER ELSE YOU WANT
 		SUCH AS INSERT DATA INTO A DATABASE  ==*/
-	} 
+	}
 }
 
 // Present form for editing data
 
 function edit($id) {
-	include("settings.php");
+	include("../config/settings.php");
 	if ($id != "") {
 		$sql = "SELECT * FROM profile WHERE id=$id";
-		$result = mysql_query($sql, $conn);
+		$result = $conn->query($sql);
 
-		while ($list = mysql_fetch_array($result)) {
+		while ($list = $result->fetch_array()) {
 			$team = $list['team'];
 			$firstname = $list['firstname'];
 			$lastname = $list['lastname'];
@@ -356,16 +356,16 @@ function edit($id) {
 // Display page and navigation
 
 function page($currentpage) {
-	include("settings.php");
+	include("../config/settings.php");
 
 	// database connection info
-//	$conn = mysql_connect('localhost','ath_hof','qRt7Q9g8') or trigger_error("SQL", E_USER_ERROR);
-//	$db = mysql_select_db('ath_hof',$conn) or trigger_error("SQL", E_USER_ERROR);
+//	$conn = new mysqli('localhost','ath_hof','qRt7Q9g8') or trigger_error("SQL", E_USER_ERROR);
+//	$db = $conn->select_db('ath_hof') or trigger_error("SQL", E_USER_ERROR);
 
-	// find out how many rows are in the table 
+	// find out how many rows are in the table
 	$sql = "SELECT COUNT(*) FROM profile";
-	$result = mysql_query($sql, $conn) or trigger_error("SQL", E_USER_ERROR);
-	$r = mysql_fetch_row($result);
+	$result = $conn->query($sql) or trigger_error("SQL", E_USER_ERROR);
+	$r = $result->fetch_row();
 	$numrows = $r[0];
 
 	// find out total pages
@@ -391,12 +391,12 @@ function page($currentpage) {
 		$currentpage = 1;
 	} // end if
 
-	// the offset of the list, based on current page 
+	// the offset of the list, based on current page
 	$offset = ($currentpage - 1) * $rowsperpage;
 
-	// get the info from the db 
+	// get the info from the db
 	$sql = "SELECT id, firstname, lastname, team, aa, aaa, hof FROM profile ORDER BY lastname ASC, firstname ASC LIMIT $offset, $rowsperpage";
-	$result = mysql_query($sql, $conn) or trigger_error("SQL", E_USER_ERROR);
+	$result = $conn->query($sql) or trigger_error("SQL", E_USER_ERROR);
 ?>
     <div id="topper">
     <div class="btn"><a href="<?php echo $_SERVER[PHP_SELF]; ?>?a=edit">+ Add New Athlete</a></div>
@@ -406,13 +406,13 @@ function page($currentpage) {
 <ul id="playerList">
 <?php
 	// while there are rows to be fetched...
-	while ($list = mysql_fetch_assoc($result)) {
+	while ($list = $result->fetch_assoc()) {
 		// echo data
 		$team = $list['team'];
-		echo "<li><a href=\"".$_SERVER[PHP_SELF]."?a=edit&amp;id=".$list['id']."\">".$list['firstname']." ".$list['lastname']." - (";
+		echo "<li><a href=\"".$_SERVER[PHP_SELF]."?a=edit&id=".$list['id']."\">".$list['firstname']." ".$list['lastname']." - (";
 		$sql2 = "SELECT * FROM sports WHERE id = '$team'";
-		$result2 = mysql_query($sql2, $conn) or trigger_error("SQL", E_USER_ERROR);
-		while ($list2 = mysql_fetch_assoc($result2)) {
+		$result2 = $conn->query($sql2) or trigger_error("SQL", E_USER_ERROR);
+		while ($list2 = $result2->fetch_assoc()) {
 			echo "".$list2['sport']." ";
 		}
 		if ($list['aa'] == "1") {
@@ -441,7 +441,7 @@ function page($currentpage) {
 		$prevpage = $currentpage - 1;
 		// show < link to go back to 1 page
 		echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$prevpage'><</a> ";
-	} // end if 
+	} // end if
 
 	// loop to show links to range of pages around current page
 	for ($x = ($currentpage - $range); $x < (($currentpage + $range) + 1); $x++) {
@@ -456,14 +456,14 @@ function page($currentpage) {
 				// make it a link
 				echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$x'>$x</a> ";
 			} // end else
-		} // end if 
+		} // end if
 	} // end for
-                 
-	// if not on last page, show forward and last page links        
+
+	// if not on last page, show forward and last page links
 	if ($currentpage != $totalpages) {
 		// get next page
 		$nextpage = $currentpage + 1;
-		// echo forward link for next page 
+		// echo forward link for next page
 		echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$nextpage'>></a> ";
 		// echo forward link for lastpage
 		echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$totalpages'>>></a> ";
@@ -475,7 +475,7 @@ function page($currentpage) {
 function getFileExtension($str) {
 
 	$i = strrpos($str,".");
-	if (!$i) { 
+	if (!$i) {
 		return "";
 	}
 

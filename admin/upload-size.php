@@ -11,11 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST")
      * mime-type of uploaded file  : $imgfile_type
      */
 
-     /*== upload directory where the file will be stored 
+     /*== upload directory where the file will be stored
           relative to where script is run ==*/
-    
+
     $uploaddir = "../photos";
-    
+
 
     /*== get file extension (fn at bottom of script) ==*/
     /*== checks to see if image file, if not do not allow upload ==*/
@@ -39,22 +39,22 @@ if ($_SERVER['REQUEST_METHOD'] == "POST")
     $imgsize = GetImageSize($imgfile);
 
     /*== check size  0=width, 1=height ==*/
-    if (($imgsize[0] > 169) || ($imgsize[1] > 215)) 
+    if (($imgsize[0] > 169) || ($imgsize[1] > 215))
     {
         /*== temp image file -- use "tempnam()" to generate the temp
-             file name. This is done so if multiple people access the 
+             file name. This is done so if multiple people access the
             script at once they won't ruin each other's temp file ==*/
         $tmpimg = tempnam("/tmp", "MKUP");
 
         /*== RESIZE PROCESS
-             1. decompress jpeg image to pnm file (a raw image type) 
+             1. decompress jpeg image to pnm file (a raw image type)
              2. scale pnm image
              3. compress pnm file to jpeg image
         ==*/
-        
+
         /*== Step 1: djpeg decompresses jpeg to pnm ==*/
         system("djpeg $imgfile >$tmpimg");
-        
+
 
         /*== Steps 2&3: scale image using pnmscale and then
              pipe into cjpeg to output jpeg file ==*/
@@ -70,13 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST")
     $final_filename = str_replace(" ", "_", $imgfile_name);
     $final_filename = "0.jpg";
     $newfile = $uploaddir . "/$final_filename";
-    
+
     /*== do extra security check to prevent malicious abuse==*/
     if (is_uploaded_file($imgfile))
     {
 
        /*== move file to proper directory ==*/
-       if (!copy($imgfile,"$newfile")) 
+       if (!copy($imgfile,"$newfile"))
        {
           /*== if an error occurs the file could not
                be written, read or possibly does not exist ==*/
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST")
     /*== delete the temporary uploaded file ==*/
     unlink($imgfile);
 
-    
+
     print("<img src=\"../photos/$final_filename\">");
 
     /*== DO WHATEVER ELSE YOU WANT

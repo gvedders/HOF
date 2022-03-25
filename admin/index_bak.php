@@ -8,7 +8,7 @@ $val_input = $_POST['val_input'];
 
 // Test if OP is given to up via POST or GET and set value accordingly
 if ($a == "")
-{ 
+{
 	$op = $_POST['op'];
 } else {
 	$op = $a;
@@ -24,7 +24,7 @@ switch ($op) {
 	case "edit" :
 		edit($id);
 		break;
-	
+
 	case "process" :
 		process($val_input);
 		break;
@@ -39,17 +39,17 @@ function secure($string) {
 	$string = htmlspecialchars($string);
 	$string = trim($string);
 	$string = stripslashes($string);
-	$string = mysql_real_escape_string($string);
+	$string = $mysqli->real_escape_string($string);
 	return $string;
 }
 
 // Do something with the form once it is posted
 
 function process($val_input) {
-	include("settings.php");
+	include("../config/settings.php");
 	foreach ($val_input[0] as $value){
 		$keyval = key($val_input[0]);
-		$proc_input[0][$keyval] = secure($value);	
+		$proc_input[0][$keyval] = secure($value);
 		next($val_input[0]);
 	}
 	if ($proc_input[0][which] == "edit") {
@@ -58,8 +58,8 @@ function process($val_input) {
 		$sql = "INSERT INTO profile values ('".$proc_input[0][id]."', '".$proc_input[0][team]."', '".$proc_input[0][firstname]."', '".$proc_input[0][lastname]."', '".$proc_input[0][pos_event]."', '".$proc_input[0][years]."', '".$proc_input[0][highschool]."', '".$proc_input[0][aa]."', '".$proc_input[0][hof]."', '".$proc_input[0][aaa]."', '".$proc_input[0][story]."', '".$proc_input[0][bests]."');";
 	}
 
-	if(!mysql_query($sql, $conn)) {
-		$dberror = mysql_error();
+	if(!$conn->query($sql)) {
+		$dberror = $mysqli->error;
 		echo "$dberror";
 	}
 	photo($proc_input);
@@ -76,11 +76,11 @@ function photo($proc_input) {
 // Present form for editing data
 
 function edit($id) {
-	include("settings.php");
+	include("../config/settings.php");
 	$sql = "SELECT * FROM profile WHERE id=$id";
-	$result = mysql_query($sql, $conn);
+	$result = $conn->query($sql);
 
-	while ($list = mysql_fetch_array($result)) {
+	while ($list = $result->fetch_array()) {
 		$team = $list['team'];
 		$firstname = $list['firstname'];
 		$lastname = $list['lastname'];
@@ -94,7 +94,7 @@ function edit($id) {
 		$bests = $list['bests'];
 	}
 	?>
-	
+
 	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
           <input type="hidden" name="op" value="process">
 	  <input type="hidden" name="val_input[0][which]" value="edit">
@@ -106,16 +106,16 @@ function edit($id) {
 // Display page and navigation
 
 function page() {
-	include("settings.php");
+	include("../config/settings.php");
 
 	// database connection info
-//	$conn = mysql_connect('localhost','ath_hof','qRt7Q9g8') or trigger_error("SQL", E_USER_ERROR);
-//	$db = mysql_select_db('ath_hof',$conn) or trigger_error("SQL", E_USER_ERROR);
+//	$conn = new mysqli('localhost','ath_hof','qRt7Q9g8') or trigger_error("SQL", E_USER_ERROR);
+//	$db = $conn->select_db('ath_hof') or trigger_error("SQL", E_USER_ERROR);
 
-	// find out how many rows are in the table 
+	// find out how many rows are in the table
 	$sql = "SELECT COUNT(*) FROM profile";
-	$result = mysql_query($sql, $conn) or trigger_error("SQL", E_USER_ERROR);
-	$r = mysql_fetch_row($result);
+	$result = $conn->query($sql) or trigger_error("SQL", E_USER_ERROR);
+	$r = $result->fetch_row();
 	$numrows = $r[0];
 
 	// find out total pages
@@ -141,17 +141,17 @@ function page() {
 		$currentpage = 1;
 	} // end if
 
-	// the offset of the list, based on current page 
+	// the offset of the list, based on current page
 	$offset = ($currentpage - 1) * $rowsperpage;
 
-	// get the info from the db 
+	// get the info from the db
 	$sql = "SELECT id, firstname, lastname FROM profile ORDER BY lastname ASC, firstname ASC LIMIT $offset, $rowsperpage";
-	$result = mysql_query($sql, $conn) or trigger_error("SQL", E_USER_ERROR);
+	$result = $conn->query($sql) or trigger_error("SQL", E_USER_ERROR);
 
 	// while there are rows to be fetched...
-	while ($list = mysql_fetch_assoc($result)) {
+	while ($list = $result->fetch_assoc()) {
 		// echo data
-		echo "<a href=\"".$_SERVER[PHP_SELF]."?a=edit&amp;id=".$list['id']."\">".$list['firstname']." ".$list['lastname']."</a><br />";
+		echo "<a href=\"".$_SERVER[PHP_SELF]."?a=edit&id=".$list['id']."\">".$list['firstname']." ".$list['lastname']."</a><br />";
 } // end while
 
 	/******  build the pagination links ******/
@@ -166,7 +166,7 @@ function page() {
 		$prevpage = $currentpage - 1;
 		// show < link to go back to 1 page
 		echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$prevpage'><</a> ";
-	} // end if 
+	} // end if
 
 	// loop to show links to range of pages around current page
 	for ($x = ($currentpage - $range); $x < (($currentpage + $range) + 1); $x++) {
@@ -181,14 +181,14 @@ function page() {
 				// make it a link
 				echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$x'>$x</a> ";
 			} // end else
-		} // end if 
+		} // end if
 	} // end for
-                 
-	// if not on last page, show forward and last page links        
+
+	// if not on last page, show forward and last page links
 	if ($currentpage != $totalpages) {
 		// get next page
 		$nextpage = $currentpage + 1;
-		// echo forward link for next page 
+		// echo forward link for next page
 		echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$nextpage'>></a> ";
 		// echo forward link for lastpage
 		echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$totalpages'>>></a> ";
