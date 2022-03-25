@@ -14,7 +14,7 @@ $currentpage = $_GET['currentpage'];
 
 // Test if OP is given to up via POST or GET and set value accordingly
 if ($a == "")
-{ 
+{
 	$op = $_POST['op'];
 } else {
 	$op = $a;
@@ -46,7 +46,7 @@ switch ($op) {
 	case "edit" :
 		edit($id);
 		break;
-	
+
 	case "process" :
 		process($val_input);
 		break;
@@ -97,7 +97,7 @@ function alpha() {
 <?php
 }
 
-function az($val_input) { 
+function az($val_input) {
 ?>
 	<div id="topper">
 	<div class="btn"><a href="<?php echo "".$_SERVER[PHP_SELF].""; ?>?a=edit">+ Add New Athlete</a></div>
@@ -181,7 +181,7 @@ function process($val_input) {
 	include("settings.php");
 	foreach ($val_input[0] as $value){
 		$keyval = key($val_input[0]);
-		$proc_input[0][$keyval] = secure($value);	
+		$proc_input[0][$keyval] = secure($value);
 		next($val_input[0]);
 	}
 	if ($proc_input[0][id] != "") {
@@ -211,7 +211,7 @@ function process($val_input) {
 		echo "<img class=\"updImg\" src=\"../photos/".$photid.".jpg\"><br />";
 	} else {
 		echo "<img class=\"updImg\" src=\"../photos/nopict.jpg\"><br />";
-	}	
+	}
 	?>
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
@@ -260,7 +260,6 @@ function photo($idpict,$imgfile,$imgfile_name,$imgfile_size,$imgfile_type) {
 			exit();
 		}
 
-
 		//-- RE-SIZING UPLOADED IMAGE
 
 		/*== only resize if the image is larger than 250 x 200 ==*/
@@ -269,7 +268,7 @@ function photo($idpict,$imgfile,$imgfile_name,$imgfile_size,$imgfile_type) {
 		/*== check size  0=width, 1=height ==*/
 		if (($imgsize[0] > 169) || ($imgsize[1] > 215))
 		{
-			/*== temp image file -- use "tempnam()" to generate the temp 
+			/*== temp image file -- use "tempnam()" to generate the temp
 			file name. This is done so if multiple people access the
 			script at once they won't ruin each other's temp file ==*/
 			$tmpimg = tempnam("/tmp", "MKUP");
@@ -314,11 +313,7 @@ function photo($idpict,$imgfile,$imgfile_name,$imgfile_size,$imgfile_type) {
 		/*== delete the temporary uploaded file ==*/
 		unlink($imgfile);
 
-//		print("<img src=\"../photos/$final_filename\">");
-
-		/*== DO WHATEVER ELSE YOU WANT
-		SUCH AS INSERT DATA INTO A DATABASE  ==*/
-	} 
+	}
 }
 
 // Present form for editing data
@@ -359,11 +354,7 @@ function edit($id) {
 function page($currentpage) {
 	include("settings.php");
 
-	// database connection info
-//	$conn = mysql_connect('localhost','ath_hof','qRt7Q9g8') or trigger_error("SQL", E_USER_ERROR);
-//	$db = mysql_select_db('ath_hof',$conn) or trigger_error("SQL", E_USER_ERROR);
-
-	// find out how many rows are in the table 
+	// find out how many rows are in the table
 	$sql = "SELECT COUNT(*) FROM profile";
 	$result = mysql_query($sql, $conn) or trigger_error("SQL", E_USER_ERROR);
 	$r = mysql_fetch_row($result);
@@ -392,10 +383,10 @@ function page($currentpage) {
 		$currentpage = 1;
 	} // end if
 
-	// the offset of the list, based on current page 
+	// the offset of the list, based on current page
 	$offset = ($currentpage - 1) * $rowsperpage;
 
-	// get the info from the db 
+	// get the info from the db
 	$sql = "SELECT id, firstname, lastname, team, aa, aaa, hof FROM profile ORDER BY lastname ASC, firstname ASC LIMIT $offset, $rowsperpage";
 	$result = mysql_query($sql, $conn) or trigger_error("SQL", E_USER_ERROR);
 ?>
@@ -442,7 +433,7 @@ function page($currentpage) {
 		$prevpage = $currentpage - 1;
 		// show < link to go back to 1 page
 		echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$prevpage'><</a> ";
-	} // end if 
+	} // end if
 
 	// loop to show links to range of pages around current page
 	for ($x = ($currentpage - $range); $x < (($currentpage + $range) + 1); $x++) {
@@ -457,34 +448,30 @@ function page($currentpage) {
 				// make it a link
 				echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$x'>$x</a> ";
 			} // end else
-		} // end if 
+		} // end if
 	} // end for
-                 
-	// if not on last page, show forward and last page links        
+
+	// if not on last page, show forward and last page links
 	if ($currentpage != $totalpages) {
 		// get next page
 		$nextpage = $currentpage + 1;
-		// echo forward link for next page 
+		// echo forward link for next page
 		echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$nextpage'>></a> ";
 		// echo forward link for lastpage
 		echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$totalpages'>>></a> ";
 	} // end if
 	/****** end build pagination links ******/
-
 }
 
 function getFileExtension($str) {
 
 	$i = strrpos($str,".");
-	if (!$i) { 
+	if (!$i) {
 		return "";
 	}
-
         $l = strlen($str) - $i;
         $ext = substr($str,$i+1,$l);
-
         return $ext;
-
 }
 
 ?>
