@@ -15,14 +15,12 @@ jQuery(function($) {
       fade: .0000000001
     }, [
       {
-        src:  'images/bg.jpg',
-        href: 'https://secure.aquinas.edu/',
+        src:  '/images/bg.jpg',
         from: 'center left',
         to:   'center right',
         time: 60
       }, {
-        src:  'images/bg.jpg',
-        href: 'https://secure.aquinas.edu/',
+        src:  '/images/bg.jpg',
         from: 'center right',
         to:   'center left',
         time: 60
