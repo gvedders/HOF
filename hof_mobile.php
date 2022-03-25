@@ -64,8 +64,8 @@ function sport($honor) {
 <?php
 	include("config/settings.php");
 	$n = 0;
-	$result = mysql_query("SELECT * FROM sports ORDER BY sport ASC");
-	while ($a_row = mysql_fetch_array($result)) {
+	$result = $mysqli->query("SELECT * FROM sports ORDER BY sport ASC");
+	while ($a_row = $result->fetch_array()) {
 		$id[$n] = $a_row['id'];
 		$sport[$n] = $a_row['sport'];
 		$n++;
@@ -80,7 +80,7 @@ function sport($honor) {
 	    $rounded = round($rows);
 	    $colmax = 2*$rounded;
 	    for ($q = 0; $q < $rows; $q++) {
-	    	echo "<li><a href=\"".$_SERVER['PHP_SELF']."?op=names&amp;sport=$id[$q]&amp;honor=$honor\">$sport[$q]</a></li>";
+	    	echo "<li><a href=\"".$_SERVER['PHP_SELF']."?op=names&sport=$id[$q]&honor=$honor\">$sport[$q]</a></li>";
 
 	    }
 	    ?>
@@ -91,7 +91,7 @@ function sport($honor) {
 	     <?php 
 		for ($q = $rows+1; $q < $colmax; $q++) {
 			if ($id[$q] != "") {
-	    		echo "<li><a href=\"".$_SERVER['PHP_SELF']."?op=names&amp;sport=$id[$q]&amp;honor=$honor\">$sport[$q]</a></li>";
+	    		echo "<li><a href=\"".$_SERVER['PHP_SELF']."?op=names&sport=$id[$q]&honor=$honor\">$sport[$q]</a></li>";
 			}
 	    }
 	     ?>
@@ -108,8 +108,8 @@ function names($sport,$honor) {
 function profile($id) {
 	// Return profile
 	include("config/settings.php");
-	$result = mysql_query("SELECT * FROM profile WHERE id ='$id'");
-	while ($a_row = mysql_fetch_array($result)) {
+	$result = $mysqli->query("SELECT * FROM profile WHERE id ='$id'");
+	while ($a_row = $result->fetch_array()) {
 		$id = $a_row['id'];
 		$team = $a_row['team'];
 		$firstname = $a_row['firstname'];
@@ -123,8 +123,8 @@ function profile($id) {
 		$story = $a_row['story'];
 		$bests = $a_row['bests'];
 	}
-	$memberof = mysql_query("SELECT * FROM sports WHERE id = '$team'");
-	while ($b_row = mysql_fetch_array($memberof)) {
+	$memberof = $mysqli->query("SELECT * FROM sports WHERE id = '$team'");
+	while ($b_row = $memberof->fetch_array()) {
 		$sport = $b_row['sport'];
 	}
 
@@ -240,8 +240,8 @@ function page($honor, $sport, $currentpage) {
 	} else {
 		$sql = "SELECT COUNT(*) FROM profile WHERE $honor='1' ORDER BY lastname ASC, firstname ASC";
 	}
-	$result = mysql_query($sql, $conn) or trigger_error("SQL", E_USER_ERROR);
-	$r = mysql_fetch_row($result);
+	$result = $conn->query($sql) or trigger_error("SQL", E_USER_ERROR);
+	$r = $result->fetch_row();
 	$numrows = $r[0];
 
 	// find out total pages
@@ -277,17 +277,17 @@ function page($honor, $sport, $currentpage) {
 		$sql = "SELECT id, firstname, lastname FROM profile WHERE $honor='1' ORDER BY lastname ASC, firstname ASC LIMIT $offset, $rowsperpage";
 	}
 	
-	$result = mysql_query($sql, $conn) or trigger_error("SQL", E_USER_ERROR);
+	$result = $conn->query($sql) or trigger_error("SQL", E_USER_ERROR);
 
 	// while there are rows to be fetched...
 	echo "<ul>\n";
-	while ($list = mysql_fetch_assoc($result)) {
+	while ($list = $result->fetch_assoc()) {
 		// echo data
-		echo "  <li><a href=\"".$_SERVER[PHP_SELF]."?op=profile&amp;id=".$list['id']."\">".$list['firstname']." ".$list['lastname']."</a></li>\n";
+		echo "  <li><a href=\"".$_SERVER[PHP_SELF]."?op=profile&id=".$list['id']."\">".$list['firstname']." ".$list['lastname']."</a></li>\n";
 	} // end while
 	// build three column table to house page navigation
 	echo "</ul><div id=\"selectionFooter\"><table width=\"400\" cellspacing=\"0\" cellpadding=\"3\"><tr>\n";
-	if (mysql_num_rows($result) != 0) {	
+	if ($result->num_rows != 0) {	
 	
 		/******  build the pagination links ******/
 		// range of num links to show
@@ -297,11 +297,11 @@ function page($honor, $sport, $currentpage) {
 		// if not on page 1, don't show back links
 		if ($currentpage > 1) {
 			// show << link to go back to page 1
-			echo " <a class=\"lastPage\" href='{$_SERVER['PHP_SELF']}?op=page&amp;currentpage=1&amp;sport=$sport&amp;honor=$honor'><img src=\"images/firstPage.png\" /></a> ";
+			echo " <a class=\"lastPage\" href='{$_SERVER['PHP_SELF']}?op=page&currentpage=1&sport=$sport&honor=$honor'><img src=\"images/firstPage.png\" /></a> ";
 			// get previous page num
 			$prevpage = $currentpage - 1;
 			// show < link to go back to 1 page
-			echo " <a class=\"prevPage\" href='{$_SERVER['PHP_SELF']}?op=page&amp;currentpage=$prevpage&amp;sport=$sport&amp;honor=$honor'><img src=\"images/prevPage.png\" /></a> ";
+			echo " <a class=\"prevPage\" href='{$_SERVER['PHP_SELF']}?op=page&currentpage=$prevpage&sport=$sport&honor=$honor'><img src=\"images/prevPage.png\" /></a> ";
 		} // end if 
 		echo "</td><td width=\"120\" align=\"center\">";
 	// loop to show links to range of pages around current page
@@ -315,7 +315,7 @@ function page($honor, $sport, $currentpage) {
 					// if not current page...
 				} else {
 					// make it a link
-					echo " <a class=\"numPage\" href='{$_SERVER['PHP_SELF']}?op=page&amp;currentpage=$x&amp;sport=$sport&amp;honor=$honor'>$x</a> ";
+					echo " <a class=\"numPage\" href='{$_SERVER['PHP_SELF']}?op=page&currentpage=$x&sport=$sport&honor=$honor'>$x</a> ";
 				} // end else
 			} // end if 
 		} // end for */
@@ -330,9 +330,9 @@ function page($honor, $sport, $currentpage) {
 			// get next page
 			$nextpage = $currentpage + 1;
 			// echo forward link for next page 
-			echo " <a class=\"nextPage\" href='{$_SERVER['PHP_SELF']}?op=page&amp;currentpage=$nextpage&amp;sport=$sport&amp;honor=$honor'><img src=\"images/nextPage.png\" /></a> ";
+			echo " <a class=\"nextPage\" href='{$_SERVER['PHP_SELF']}?op=page&currentpage=$nextpage&sport=$sport&honor=$honor'><img src=\"images/nextPage.png\" /></a> ";
 			// echo forward link for lastpage
-			echo " <a class=\"lastPage\" href='{$_SERVER['PHP_SELF']}?op=page&amp;currentpage=$totalpages&amp;sport=$sport&amp;honor=$honor'><img src=\"images/lastPage.png\" /></a> ";
+			echo " <a class=\"lastPage\" href='{$_SERVER['PHP_SELF']}?op=page&currentpage=$totalpages&sport=$sport&honor=$honor'><img src=\"images/lastPage.png\" /></a> ";
 		} // end if
 		/****** end build pagination links ******/
 	} else{ 
