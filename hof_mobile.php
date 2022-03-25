@@ -44,9 +44,6 @@ switch ($op) {
 
 function splash() {
 	// Display navigation for three HOF options
-	/*echo "<a href=\"https://secure.aquinas.edu".$_SERVER['PHP_SELF']."?op=sport&amp;honor=aaa\">Academic All Americans</a><br />
-	<a href=\"https://secure.aquinas.edu".$_SERVER['PHP_SELF']."?op=hof\">Hall of Fame</a><br />
-	<a href=\"https://secure.aquinas.edu".$_SERVER['PHP_SELF']."?op=sport&amp;honor=aa\">All Americans</a><br />";*/
 	include("design/main.php");
 }
 
@@ -71,7 +68,6 @@ function sport($honor) {
 	while ($a_row = mysql_fetch_array($result)) {
 		$id[$n] = $a_row['id'];
 		$sport[$n] = $a_row['sport'];
-		//echo "<a href=\"https://secure.aquinas.edu".$_SERVER['PHP_SELF']."?op=names&amp;sport=$id[$n]&amp;honor=$honor\">$sport[$n]</a><br />";
 		$n++;
 	}
 	?><table>
@@ -84,7 +80,7 @@ function sport($honor) {
 	    $rounded = round($rows);
 	    $colmax = 2*$rounded;
 	    for ($q = 0; $q < $rows; $q++) {
-	    	echo "<li><a href=\"https://secure.aquinas.edu".$_SERVER['PHP_SELF']."?op=names&amp;sport=$id[$q]&amp;honor=$honor\">$sport[$q]</a></li>";
+	    	echo "<li><a href=\"".$_SERVER['PHP_SELF']."?op=names&amp;sport=$id[$q]&amp;honor=$honor\">$sport[$q]</a></li>";
 
 	    }
 	    ?>
@@ -95,7 +91,7 @@ function sport($honor) {
 	     <?php 
 		for ($q = $rows+1; $q < $colmax; $q++) {
 			if ($id[$q] != "") {
-	    		echo "<li><a href=\"https://secure.aquinas.edu".$_SERVER['PHP_SELF']."?op=names&amp;sport=$id[$q]&amp;honor=$honor\">$sport[$q]</a></li>";
+	    		echo "<li><a href=\"".$_SERVER['PHP_SELF']."?op=names&amp;sport=$id[$q]&amp;honor=$honor\">$sport[$q]</a></li>";
 			}
 	    }
 	     ?>
@@ -144,10 +140,10 @@ function profile($id) {
 			$photopath = "/home/httpd/htdocs/hof/photos/".$id.".jpg";
 			if (file_exists($photopath)) {
 			?>
-				<img src="https://secure.aquinas.edu/hof/photos/<?php echo "$id";?>.jpg" />
+				<img src="/photos/<?php echo "$id";?>.jpg" />
 		<?php 
 			} else { ?>
-			  <img src="https://secure.aquinas.edu/hof/photos/nopict.jpg" />
+			  <img src="/photos/nopict.jpg" />
 		<?php 
 			} 
 		?>               </div>
