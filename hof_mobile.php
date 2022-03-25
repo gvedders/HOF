@@ -137,7 +137,7 @@ function profile($id) {
           <div id="photoCont">
               <div id="photo">
 		<?php 
-			$photopath = "/home/httpd/htdocs/hof/photos/".$id.".jpg";
+			$photopath = $path.$id.".jpg";
 			if (file_exists($photopath)) {
 			?>
 				<img src="/photos/<?php echo "$id";?>.jpg" />
@@ -304,21 +304,6 @@ function page($honor, $sport, $currentpage) {
 			echo " <a class=\"prevPage\" href='{$_SERVER['PHP_SELF']}?op=page&currentpage=$prevpage&sport=$sport&honor=$honor'><img src=\"images/prevPage.png\" /></a> ";
 		} // end if 
 		echo "</td><td width=\"120\" align=\"center\">";
-	// loop to show links to range of pages around current page
-/*		for ($x = ($currentpage - $range); $x < (($currentpage + $range) + 1); $x++) {
-			// if it's a valid page number...
-			if (($x > 0) && ($x <= $totalpages)) {
-				// if we're on current page...
-				if ($x == $currentpage) {
-					// 'highlight' it but don't make a link
-					echo "<span class=\"currentPage\">$x</span>";
-					// if not current page...
-				} else {
-					// make it a link
-					echo " <a class=\"numPage\" href='{$_SERVER['PHP_SELF']}?op=page&currentpage=$x&sport=$sport&honor=$honor'>$x</a> ";
-				} // end else
-			} // end if 
-		} // end for */
 ?>
 <?php if ($totalpages == 1) {echo "<div class=\"padFix2\">"; } ?>
 <span class="navStyle"><?php echo "$currentpage"; ?> <span class="navItalics">of</span> <?php echo "$totalpages"; ?></span>
