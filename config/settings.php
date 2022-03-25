@@ -12,7 +12,7 @@ $rowsperpage = 8;
 $live = "true";
 
 // Site path
-$path = "/change/path/to/webroot";
+$basepath = "/change/path/to/webroot";
 
 // No result error message
 $noresultmessage = "<td align=\"center\" class=\"underConst\">This section is under construction, please check back soon as new information is added daily.</td></tr></table>";
