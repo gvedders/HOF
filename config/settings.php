@@ -13,6 +13,6 @@ $noresultmessage = "<td align=\"center\" class=\"underConst\">This section is un
 
 // Stop editing at this point
 
-$conn = mysql_connect($host, $user, $passwd);
-$db = mysql_select_db($dbname,$conn);
+$conn = new mysqli($host, $user, $passwd);
+$db = $conn->select_db($dbname);
 ?>
