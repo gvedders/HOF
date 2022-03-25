@@ -137,7 +137,7 @@ function profile($id) {
           <div id="photoCont">
               <div id="photo">
 		<?php 
-			$photopath = $basepath.$id.".jpg";
+			$photopath = $basepath."/photos/".$id.".jpg";
 			if (file_exists($photopath)) {
 			?>
 				<img src="/photos/<?php echo "$id";?>.jpg" />
